@@ -1,0 +1,31 @@
+#App-container {
+  display:flex;
+}
+
+#Stage-container {
+  width:calc(100vw - 150px);
+  height: 100vh;
+  box-shadow: inset 0px 0px 6px 0px rgba(0,0,0,0.3);
+  opacity: 0.8;
+
+  /* https://www.magicpattern.design/tools/css-backgrounds */
+  /* background-image:  linear-gradient(
+                      rgba(0,0,0,0.1)
+                      1px, transparent 1px
+                    ), linear-gradient(
+                      to right,
+                      rgba(0,0,0,0.1)
+                      1px, rgba(0,0,0,0.02)
+                      1px); */
+
+  background-size: 20px 20px;
+}
+
+#Stage {
+  border: 1px solid black;
+}
+
+#Toolbox {
+  flex: 1;
+}
+

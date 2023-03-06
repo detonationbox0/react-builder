@@ -10,14 +10,14 @@
   opacity: 0.8;
 
   /* https://www.magicpattern.design/tools/css-backgrounds */
-  background-image:  linear-gradient(
+  /* background-image:  linear-gradient(
                       rgba(0,0,0,0.1)
                       1px, transparent 1px
                     ), linear-gradient(
                       to right,
                       rgba(0,0,0,0.1)
                       1px, rgba(0,0,0,0.02)
-                      1px);
+                      1px); */
 
   background-size: 20px 20px;
 }
@@ -30,18 +30,28 @@
   position:absolute;
   top: 10px; right: 10px;
   padding: 5px;
-  background-color:white;
+  width: 50px;
+  background-color:rgba(0,0,0,.05);
+  border-radius:5px;
+  /* filter:blur(4px); */
+  display:flex;
+  flex-wrap:wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .ToolboxButton {
-  width:300px;
+  width:35px;
   height:35px;
   display:flex;
+  flex-direction:column;
   align-items: center;
   justify-content: center;
   /* background-color: lightcoral; */
   border: 2px solid rgba(0,0,0,.1);
+  border-radius:5px;
   margin:5px;
+  background-color:white;
 }
 
 .ToolboxButton:hover {
@@ -53,8 +63,10 @@
 .ToolBoxButton_img {
   height:20px;
   width: 20px;
+  /* margin-bottom:10px; */
 }
 
 .ToolBoxButton_name {
   margin-left: 5px;
+  font-size:smaller;
 }

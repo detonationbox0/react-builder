@@ -1,9 +1,20 @@
+import { useState, useEffect } from "react"
+import { Image } from "react-konva"
+
 import zoomIn from "../img/zoom-in.png"
 import zoomOut from "../img/zoom-out.png"
 import share from "../img/share.png"
+import chicken from "../img/rooster.png"
+import text from "../img/text.png"
+import alien from "../img/alien.png"
 
-const Toolbox = ({stageRef, clipRef}) => {
 
+
+
+const Toolbox = ({chickens, stageRef, clipRef}) => {
+
+    // Import the state of chickens
+    const [numChickens, setChickens] = chickens;
 
     /* -----------------------------------------------------------------*\
     | User clicks "Zoom In" 
@@ -31,17 +42,42 @@ const Toolbox = ({stageRef, clipRef}) => {
         stage.scaleY(newScale)
     }
 
+    /* -----------------------------------------------------------------*\
+    | User clicks "Add Chicken" 
+    \* -----------------------------------------------------------------*/ 
+    
+    const addChicken = () => {
+        
+        const newChicken = numChickens.numChickens + 1;
+        const newChickenObj = {
+            numChickens:newChicken
+        }
+        setChickens(newChickenObj)
+        console.log("(Toolbox) Adding a chicken... There are currently ", numChickens.numChickens, " chickens.")
+        // alert("Add a chicken!")
+    }
+
+    /* -----------------------------------------------------------------*\
+    | User clicks "Add Text" 
+    \* -----------------------------------------------------------------*/ 
+    const addText= () => {
+        console.log("Add text...")
+    }
+
 
     /* -----------------------------------------------------------------*\
     | User clicks "Export" 
     \* -----------------------------------------------------------------*/ 
-    const exportStage = async () => {
+    const exportStage = () => {
         console.log(clipRef)
         const dataURL = clipRef.current.toDataURL({
             pixelRatio: 2 // or other value you need
         })
         downloadURI(dataURL, 'output.png');
     }
+
+
+
 
     // function from https://stackoverflow.com/a/15832662/512042
     function downloadURI(uri, name) {
@@ -53,6 +89,10 @@ const Toolbox = ({stageRef, clipRef}) => {
         document.body.removeChild(link);
     }
 
+    const getAlien = () => {
+        alert("Get the alien!")
+    } 
+
     /* -----------------------------------------------------------------*\
     | Available Buttons
     \* -----------------------------------------------------------------*/ 
@@ -60,7 +100,10 @@ const Toolbox = ({stageRef, clipRef}) => {
     const availableButtons = [
         {img: zoomIn, name:"Zoom In", action:toolZoomIn},
         {img: zoomOut, name:"Zoom Out", action:toolZoomOut},
-        {img: share, name:"Export", action:exportStage}
+        {img: chicken, name:"Add Chicken", action:addChicken},
+        {img: alien, name:"Add Alien", action:getAlien},
+        {img: text, name:"Add Text", action:addText},
+        {img: share, name:"Export", action:exportStage},
     ]
 
     const ToolboxButton = () => {
@@ -71,13 +114,13 @@ const Toolbox = ({stageRef, clipRef}) => {
                         <div    id={i}
                                 className="ToolboxButton"
                                 onClick={button.action}
-                            >
+                        >
 
                             <img    className="ToolBoxButton_img"
                                     src={button.img}
-                                    alt="Toolbox Button Image Not Found" />
+                                    alt="" />
 
-                            <div className="ToolBoxButton_name">{button.name}</div>
+                            {/* <div className="ToolBoxButton_name">{button.name}</div> */}
                         </div>
                     )
                 })}

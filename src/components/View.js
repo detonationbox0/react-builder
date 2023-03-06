@@ -1,41 +1,49 @@
-import {useEffect, useLayoutEffect, useRef, useState} from "react"
+import {useEffect, useState} from "react"
 import {Stage, Layer, Rect, Image, Group} from 'react-konva';
 import TransformerRect from "./TransformerRect";
+import TransformerImage from "./TransformerImage";
+import chicken from "../img/rooster.png"
 
 
 /* -----------------------------------------------------------------*\
 | When the window is resized                                         |
 \* -----------------------------------------------------------------*/
 //#region
-
-function useWindowDimensions() {
-    const [windowWidth, setWidth] = useState(window.innerHeight)
-    const [windowHeight, setHeight] = useState(window.innerHeight)
-    
-    const updateWidthAndHeight = () => {
-        setWidth(window.innerWidth);
-        setHeight(window.innerHeight);
-    }
-    
-    useEffect(() => {
-        window.addEventListener("resize", updateWidthAndHeight);
-        return () => {
-            window.removeEventListener("resize", updateWidthAndHeight);
+    function useWindowDimensions() {
+        const [windowWidth, setWidth] = useState(window.innerWidth)
+        const [windowHeight, setHeight] = useState(window.innerHeight)
+        
+        const updateWidthAndHeight = () => {
+            setWidth(window.innerWidth);
+            setHeight(window.innerHeight);
         }
-    }, [])
+        
+        useEffect(() => {
+            window.addEventListener("resize", updateWidthAndHeight);
+            return () => {
+                window.removeEventListener("resize", updateWidthAndHeight);
+            }
+        }, [])
 
-    return {
-        windowWidth,
-        windowHeight
+        return {
+            windowWidth,
+            windowHeight
+        }
     }
-}
+//#endregion
 
 
-
-const View = ({stageRef, clipRef}) => {
+const View = ({chickens, stageRef, clipRef}) => {
 
     const {windowWidth, windowHeight} = useWindowDimensions();
     const [width, height] = [window.innerWidth, window.innerHeight]
+
+    /* -----------------------------------------------------------------*\
+    | Import global states                                               |
+    \* -----------------------------------------------------------------*/
+
+    // Import the state of chickens
+    const [numChickens, setChickens] = chickens;
 
 
     /* -----------------------------------------------------------------*\
@@ -47,7 +55,7 @@ const View = ({stageRef, clipRef}) => {
 
         // Make some state for the scale
         const [scaleState, setScaleState] = useState({
-            stageScale: 1,
+            stageScale: 1, 
             stageX: 0,
             stageY: 0
         })
@@ -80,18 +88,29 @@ const View = ({stageRef, clipRef}) => {
 
 
     /* -----------------------------------------------------------------*\
-    | Load the image for the <Image /> of the shirt                      |
+    | Load the image for the <Image /> of the shirt and chickens         |
     \* -----------------------------------------------------------------*/
     //#region
 
         // https://konvajs.org/docs/react/Images.html
         // https://blog.logrocket.com/canvas-manipulation-react-konva/
         const [image, setImage] = useState(new window.Image());
+        const [chickenImage, setChickenImage] = useState(new window.Image());
+
         useEffect(() => {
+
+            // T-Shirt
             const img = new window.Image();
             img.src = "https://portal.themailshark.net/franchisepromoF/Apparels/Apparel_front_12_356_305.png"
             setImage(img);
+            
+            // Chicken
+            const chickenImg = new window.Image();
+            chickenImg.src = chicken
+            setChickenImage(chickenImg);
+
         }, [])
+
 
         // Set the desired properties of the shirt image
         const ratio = [4500, 6000]
@@ -104,6 +123,8 @@ const View = ({stageRef, clipRef}) => {
             height:imgHeight,
             fillColor:"white"
         }
+
+
 
     //#endregion
 
@@ -139,10 +160,53 @@ const View = ({stageRef, clipRef}) => {
             fill: "blue",
             id: "rect"
         });
+
+        // Chicken Properties
+        const [chickProps, setChickProps] = useState({
+            x: 0,
+            y: 0,
+            width: movWidth,
+            height: movHeight,
+            id: "chick" + numChickens.numChickens
+        });
+
+
+        console.log("(View) There are ", numChickens.numChickens, " chickens.")
+        const Chickens = () => {
+            const chickenChildren = []
+            for (var i = 0; i < numChickens.numChickens; i++) {
+                console.log(i)
+                chickenChildren.push(
+                        <TransformerImage
+                            x={(width / 2) - (maskWidth / 2)}
+                            y={(height / 2) - (maskHeight / 2) - verticalAdjust}
+                            img={chickenImage}
+                            shapeProps={chickProps}
+                            isSelected={chickProps.id === selectedId}
+                            onSelect={() => {
+                                console.log("(View) You selected id", chickProps.id)
+                                selectShape(chickProps.id);
+                            }}
+                            onChange={newAttrs => {
+                                console.log("(View) New attrs: ", newAttrs)
+                                setChickProps(newAttrs);
+                            }}
+                        />
+                )
+            }
+
+            return(chickenChildren)
+
+        }
+
         const [selectedId, selectShape] = useState(null);
 
-    //#endregion
 
+
+
+
+    //#endregion
+    console.log(windowWidth, windowHeight)
     return (
         <div id="Stage-container">
             <Stage
@@ -164,7 +228,6 @@ const View = ({stageRef, clipRef}) => {
                 }}
             >
                 <Layer>
-                    
 
                     {/* Image of the shirt */}
                     <Image 
@@ -180,6 +243,11 @@ const View = ({stageRef, clipRef}) => {
                         clipY={(height / 2) - (maskHeight / 2) - verticalAdjust}
                         ref={clipRef}
                     >
+                        { // Add the number of chickens
+                            <Chickens />
+                        }
+                        {/*  */}
+
                         <Rect
                             width={maskWidth}
                             height={maskHeight}
